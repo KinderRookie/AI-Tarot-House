@@ -48,4 +48,4 @@ def get_tarot():
     return render_template('answer.html', cards=card_indices, answer=answer)
 
 if __name__ == '__main__':
-    app.run(debug=False)  # Set debug to False in production
+    app.run(host='0.0.0.0', port=5000, debug=False)
