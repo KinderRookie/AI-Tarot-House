@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarot House</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body id="bodybody">
+    <section id="top">
+      <h1>Tarot House</h1>
+    </section>
+    <div id="des">
+      <p>You pick 3 cards and ask a question.</p>
+      <p>
+        Then, the AI will answer your question based on the cards you picked.
+      </p>
+    </div>
+
+    <div id="tarot-picker"></div>
+
+    <form id="questionform" method="POST" , action="/tarot">
+      <label for="question">Question</label>
+
+      <input type="text" name="question" id="question" />
+      <label for="language">Choose your language:</label>
+      <select id="language" name="language">
+        <option value="English">English</option>
+        <option value="Korean">Korean</option>
+      </select>
+      <div id="btns">
+        <button id="btn" type="submit">Ask!</button>
+        <button id="btn2" type="button">Reset</button>
+      </div>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+      // add 20 card object to the tarot-picker in delay 10ms
+      // and after appear, use 'show' animation for each card
+      const tarotPicker = document.querySelector("#tarot-picker");
+      for (let i = 0; i < 22; i++) {
+        setTimeout(() => {
+          tarotPicker.innerHTML += `<div class="card"></div>`;
+        }, i * 400);
+      }
+      setTimeout(() => {
+        const cards = document.querySelectorAll(".card");
+        cards.forEach((card) => {
+          card.style.animation = "show 0.6s ease-out";
+        });
+      }, 10);
+
+      // if click the card, add 'clicked' class to the card
+
+      tarotPicker.addEventListener("click", (e) => {
+        if (e.target.classList.contains("card")) {
+          e.target.classList.toggle("clicked");
+        }
+      });
+
+      // before picking 3 cards, disable the button
+      // after picking 3 cards, enable the button
+      const btn = document.querySelector("#btn");
+      btn.disabled = true;
+      tarotPicker.addEventListener("click", (e) => {
+        if (e.target.classList.contains("card")) {
+          const clickedCards = document.querySelectorAll(".clicked");
+          if (clickedCards.length === 3) {
+            btn.disabled = false;
+          } else {
+            btn.disabled = true;
+          }
+        }
+      });
+
+      // if click Reset, remove 'clicked' class from all cards
+      const btn2 = document.querySelector("#btn2");
+      btn2.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const clickedCards = document.querySelectorAll(".clicked");
+        clickedCards.forEach((card) => {
+          card.classList.remove("clicked");
+        });
+        btn.disabled = true;
+      });
+      window.addEventListener("scroll", () => {
+        const scrollPos = window.scrollY || window.pageYOffset;
+        const scrollMid = getPageHeight() / 2;
+        let t;
+
+        t = scrollPos / scrollMid;
+        const [r, g, b] = interpolateColors(
+          [red, green, blue],
+          [red2, green2, blue2],
+          t
+        );
+        body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+      });
+
+      const typedText = document.querySelector("#des");
+      const textToType = typedText.textContent;
+      const questionForm = document.querySelector("#questionform");
+      typedText.textContent = "";
+      let currentIndex = 0;
+
+      function typeCharacter() {
+        typedText.innerHTML += textToType[currentIndex];
+        currentIndex += 1;
+
+        if (currentIndex < textToType.length) {
+          setTimeout(typeCharacter, 60); // reduced the delay to 80ms
+        } else {
+          questionForm.classList.add("show");
+        }
+      }
+      typeCharacter();
+
+      $("#questionform").on("submit", function (e) {
+        // Show the loading spinner when the form is submitted.
+        $("#loading-spinner").show();
+      });
+    </script>
+    <div id="loading-spinner" style="display: none">
+      <div class="spinner"></div>
+    </div>
+  </body>
+</html>
