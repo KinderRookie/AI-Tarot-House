@@ -7,8 +7,6 @@ from tarot_data import tarot_data  # Import the tarot data
 app = Flask(__name__)
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
-print(openai.api_key)
-
 try:
     with open('/etc/secrets/api_key.txt', 'r') as file:
         openai.api_key = file.read()
