@@ -8,6 +8,14 @@ app = Flask(__name__)
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+try:
+    with open('/etc/secrets/api_key.txt', 'r') as file:
+        openai.api_key = file.read()
+except FileNotFoundError:
+    print("The file does not exist")
+except Exception as e:
+    print(f"An error occurred: {e}")
+
 @app.route('/')
 def index():
     return render_template('proto.html')
