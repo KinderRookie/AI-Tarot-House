@@ -37,7 +37,7 @@ def get_tarot():
     
 
     try:
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions(
             model="gpt-3.5-turbo",
             messages=[
                 {"role":"system", "content":"You are a AI tarot reader. You give advice to client based on his/her tarot card."},
