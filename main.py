@@ -1,19 +1,15 @@
 import os
 import random
 from flask import Flask, render_template, request
+from openai import OpenAI
 import openai
+
 from tarot_data import tarot_data  # Import the tarot data
 
 app = Flask(__name__)
 
+
 openai.api_key = os.getenv('OPENAI_API_KEY')
-try:
-    with open('/etc/secrets/api_key.txt', 'r') as file:
-        openai.api_key = file.read()
-except FileNotFoundError:
-    print("The file does not exist")
-except Exception as e:
-    print(f"An error occurred: {e}")
 
 @app.route('/')
 def index():
@@ -37,7 +33,8 @@ def get_tarot():
     
 
     try:
-        response = openai.chat.completions(
+        client = OpenAI()
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role":"system", "content":"You are a AI tarot reader. You give advice to client based on his/her tarot card."},
