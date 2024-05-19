@@ -51,6 +51,7 @@ def get_tarot():
     except Exception as e:
         print(f"Error: {e}")
         answer = "Sorry, there was an error processing your request."
+        answer = e
     
     return render_template('answer.html', cards=card_indices, answer=answer)
 
